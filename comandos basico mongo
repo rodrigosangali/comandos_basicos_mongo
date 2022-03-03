@@ -1,0 +1,83 @@
+
+
+# Mostras todos bancos de dados
+show dbs
+#entra no banco 
+use vm
+
+# Criar banco de dados
+db.createCollection('estados')
+
+# Mostrar todas as Collection dentro de um banco de dados
+show collections
+
+# Deletar uma collection
+db.estados.drop()
+
+# Inserir objeto em uma collection
+db.estados.insert({nome: "Acre", sigla: "AC", region: "Norte"})
+
+# Atualizar ou Inserir utilizando SAVE
+db.estados.save({nome: "Alagoas", sigla: "AL", regiao: "Nordeste", populacao: 3322000})
+
+# Consultar objetos na collection
+db.estados.find()
+
+# Consultar objetos no formato JSON
+db.estados.find().pretty()
+
+db.estados.insert({ nome: "Rio de Janeiro",
+sigla: "RJ",
+regiao: "Sudeste",
+cidades: [{nome: "Niterói",
+area: 133.9,
+populacao: 487562}]})
+
+db.estados.insert({nome: "São Paulo",
+sigla: "SP",
+região: "Sudeste",
+cidades: [{_id: ObjectId(),
+nome: "Campinas",
+area: 795.7,
+prefeito: "Jonas Dozinette",
+populacao: 1081000},
+{_id: ObjectId(),
+nome: "Garulhos",
+populacao: 132500},
+{_id: ObjectId(),
+nome: "Sorocaba",
+distanciaCapital: 87,
+populacao: 644919}]})
+
+# Consultar apenas um registro
+db.estados.findOne()
+
+# Consultar um registro com filtro
+db.estados.findOne({sigla: "RJ"})
+db.estados.find({sigla: "RJ"})
+db.estados.find({sigla: "RJ"}).pretty()
+
+# Consultar com OR
+db.estados.find({$or: [{sigla: "RJ"},{sigla: "AC"}]})
+db.estados.find({$or: [{sigla: "RJ"},{sigla: "AC"}]}).pretty()
+
+# Consulta
+db.estados.find({populacao: {$exists: true}})
+db.estados.find({populacao: {$exists: true}}).pretty()
+
+# SKIP e LIMIT
+db.estados.find().skip(1)
+db.estados.find().skip(1).limit(2)
+
+# COUNT
+db.estados.count()
+
+# Filtrar sigla SP e quais atributos(nome e sigla)
+db.estados.find({sigla: "SP"}, {nome: 1, sigla: 1})
+db.estados.find({sigla: "SP"}, {nome: 1, sigla: 1, _id: 0})
+
+# Trazer somente os nomes das cidades
+db.estados.find({sigla: "SP"}, {"cidades.nome": 1, _id: 0})
+
+#resultado:
+#{ "cidades" : [ { "nome" : "Campinas" }, { "nome" : "Garulhos" }, { "nome" : "Sorocaba" } ] }

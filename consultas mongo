@@ -1,0 +1,52 @@
+
+# Um estagio do pipeline de agregação
+db.estados.aggregate([
+    {$project: {nome: 1, "cidades.nome": 1, _id: 0}}
+    ])
+
+
+# Somar a populacao de todas as cidades
+db.estados.aggregate([
+    {$project: {populacao: {$sum: "$cidades.populacao"}, sigla: 1, _id: 0}}
+])
+
+# Agrupar todas as cidades e somar a populacao
+db.estados.aggregate([
+    {$project: {populacao: {$sum: "$cidades.populacao"}, sigla: 1, _id: 0}},
+    {$group: {_id: null, populacaoTotal: {$sum: "$populacao"}}}
+])
+
+
+db.estados.aggregate([
+    {$project: {populacao: {$sum: "$cidades.populacao"}, sigla: 1, _id: 0}},
+    {$group: {_id: null, populacaoTotal: {$sum: "$populacao"}}},
+    {$project: { _id: 0, populacaoTotal: 1}}
+])
+
+
+# Buscar os estados que contém a cidade de Sorocaba 
+db.estados.aggregate([
+    {$match: {"cidades.nome": "Sorocaba"}}
+    ]).pretty()
+
+# desempacotar por cidade
+db.estados.aggregate([
+    {$match: {"cidades.nome": "Sorocaba"}},
+    {$unwind: "$cidades"}
+    ]).pretty()    
+
+# Mostar somente a cidade de Sorocaba
+db.estados.aggregate([
+    {$match: {"cidades.nome": "Sorocaba"}},
+    {$unwind: "$cidades"},
+    {$match: {"cidades.nome": "Sorocaba"}}
+    ]).pretty()        
+
+
+# Mostar somente o id da cidade de Sorocaba
+db.estados.aggregate([
+    {$match: {"cidades.nome": "Sorocaba"}},
+    {$unwind: "$cidades"},
+    {$match: {"cidades.nome": "Sorocaba"}},
+    {$project: {_id: "$cidades._id"}}
+    ]).pretty()        

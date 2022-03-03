@@ -1,0 +1,28 @@
+db.estados.find().pretty()
+
+# Incluir populacao no estado de Sao Paulo
+db.estados.update({sigla: "SP"}, {$set: {populacao: 453400000}})
+
+# Incluir cidade Sergipe no estado de Alagoas
+db.estados.update({sigla: "AL"}, {$set: {cidades: [{nome: "Sergipe"}]}})
+
+#  O objeto será adicionado dentro do array cidades
+db.estados.update({sigla: "SP"}, {$push: {cidades: {nome: "Santos", populacao: 433966}}})
+
+# Somente os estados que tem populacao
+db.estados.find({populacao: {$exists: true}}, {_id: 0, nome: 1})
+
+# Remover estado do Acre
+db.estados.remove({sigla: "AC"})
+
+db.estados.count()
+db.estados.find().pretty()
+
+# Remover os estados que nao tem população
+db.estados.remove({populacao: {$exists: false}})
+
+# Incluir populacao no estado de Rio de Janeiro
+db.estados.update({sigla: "RJ"}, {$set: {populacao:16720000}})
+
+#Less than, remove estado com populações menores que 20 milhoes de habitantes
+db.estados.remove({populacao: {$lt: 200000000}})
